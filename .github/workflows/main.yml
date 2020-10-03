@@ -6,7 +6,7 @@ name: React App Deploy to Surge
 # events but only for the master branch
 on:
   push:
-    branches: [ master ]
+    branches: [ master, main ]
   pull_request:
     branches: [ master ]
 
@@ -38,4 +38,4 @@ jobs:
       run: npm install --global surge
 
     - name: Deploy to Surge
-      run: surge ./build malik-quizApp.surge.sh --token ${{ secrets.SURGETOKEN }}
+      run: surge ./build malik-quiz-app.surge.sh --token ${{ secrets.SURGETOKEN }}
