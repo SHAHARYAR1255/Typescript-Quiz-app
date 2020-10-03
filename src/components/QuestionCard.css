@@ -1,0 +1,18 @@
+.questionCard{
+    font-size: x-large;
+}
+
+.questionCard__question{
+    margin-left: auto;
+}
+.questionCard__option{
+    color: purple;
+    margin: 5px;
+    border-color: purple;
+
+}
+.questionCard__option:hover{
+    color: #fff;
+    background-color: purple;
+    margin: 10px;
+}
