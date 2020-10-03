@@ -4,7 +4,7 @@ import {AnswerObj, QuizState } from './services/QuizTypes';
 import QuestionCard from './components/QuestionCard';
 import './App.css';
 
-const TOTAL_QUESTIONS = 2;
+const TOTAL_QUESTIONS = 5;
 
 function App() {
 
