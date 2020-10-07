@@ -10,10 +10,11 @@ export enum Difficulty{
 
 }
 
-export const fetchQuestions = async (difficulty:Difficulty , totalQuestions:number): Promise<QuizState[]> =>{
-    const res = fetch(`https://opentdb.com/api.php?amount=${totalQuestions}&category=9&difficulty=${difficulty}&type=multiple`)
+export const fetchQuestions = async (difficulty:string , totalQuestion:number): Promise<QuizState[]> =>{
+    const res = fetch(`https://opentdb.com/api.php?amount=${totalQuestion}&category=9&difficulty=${difficulty}&type=multiple`)
     let data =await (await res).json();
     const {results} = data;
+    console.log(results);
     const quiz = results.map((questionObj:Quiz)=>{
         return {
         ...questionObj ,

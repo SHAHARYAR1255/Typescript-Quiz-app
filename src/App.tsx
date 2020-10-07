@@ -1,31 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { Difficulty, fetchQuestions } from "./services/API";
 import {AnswerObj, QuizState } from './services/QuizTypes';
 import QuestionCard from './components/QuestionCard';
 import './App.css';
+import { useForm } from "react-hook-form";
 
-const TOTAL_QUESTIONS = 2;
+// const TOTAL_QUESTIONS = 2;
 
-function App() {
+type Detail = {
+  diff: string;
+  total: number;
+};
 
-  // const requestUrl ='api.unsplash.com/search/photos?query=london&client_id=vbadWMYL2JqJDpLtU8eDP6WOCCd9hwU5h8nTIN91otg';
-
-  // async function getNewImage() {
-  //   let randomNumber = Math.floor(Math.random() * 10);
-  //   return fetch(requestUrl)
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       let allImages = data.results[randomNumber];
-  //       return allImages.urls.regular;
-  //     });
-  //   } 
-  // console.log(getNewImage());
-   
-
-
-
-
-
+const App = () => {
+  const [totalQuestion, setTotalQuestion] = useState(0);
+  const [difficulty, setDifficulty] = useState("easy");
+  const { register, handleSubmit, errors } = useForm<Detail>();
 
   const [loading, setLoading] = useState(false);
   const [questions, setQuestions] = useState<QuizState[]>([]);
@@ -34,67 +24,62 @@ function App() {
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(true);
 
-  // const [state, setstate] = useState<Quiz[]>([]);
-  // const [difficulty, setDifficulty] = useState('easy');
-  // const [numbers, setNumbers] = useState(5)
-
-  // useEffect(() => {
-  //     async function fetchData(difficulty:string, numbers:number){
-
-  //     const questions= await fetchQuestions(difficulty, numbers);
-  //     console.log(questions);
-  //     setstate(questions);
-  //   }
-  //   fetchData(difficulty, numbers);
-  // }, [])
   const startQuiz = async () => {
     setLoading(true);
     setGameOver(false);
 
-    const nextQues = await fetchQuestions(Difficulty.EASY , TOTAL_QUESTIONS);
+    const nextQues = await fetchQuestions(difficulty, totalQuestion);
     setQuestions(nextQues);
     setScore(0);
+    console.log(questions);
     setUserAnswers([]);
     setNumber(0);
     setLoading(false);
 
   };
 
-  const checkAnswer = (e :React.MouseEvent<HTMLButtonElement>) => {
-    if (!gameOver){
-      const answer = e.currentTarget.value ;
-      const correct = questions[number].correct_answer === answer;
+  // const checkAnswer = (e :React.MouseEvent<HTMLButtonElement>) => {
+  //   if (!gameOver){
+  //     const answer = e.currentTarget.value ;
+  //     const correct = questions[number].correct_answer === answer;
 
-      if(correct){
-        setScore(prev => prev + 1);
-      }
-      const answerObj = {
-        question : questions[number].question ,
-        answer ,
-        correct ,
-        correct_answer : questions[number].correct_answer 
-      };
-      setUserAnswers(prev => [...prev, answerObj]);
+  //     if(correct){
+  //       setScore(prev => prev + 1);
+  //     }
+  //     const answerObj = {
+  //       question : questions[number].question ,
+  //       answer ,
+  //       correct ,
+  //       correct_answer : questions[number].correct_answer
+  //     };
+  //     setUserAnswers(prev => [...prev, answerObj]);
 
-    }
-  };
+  //   }
+  // };
 
-  const nextQuestion = () => {
-    //next if not last 
+  // const nextQuestion = () => {
+  //   //next if not last
 
-    const nextQues = number + 1;
-    if (nextQues !== TOTAL_QUESTIONS){
-      setNumber(nextQues)
-    }else{
-      setGameOver(true);
-    }
-  };
+  //   const nextQues = number + 1;
+  //   if (nextQues !== TOTAL_QUESTIONS){
+  //     setNumber(nextQues)
+  //   }else{
+  //     setGameOver(true);
+  //   }
+  // };
+  const onSubmit = handleSubmit((data) => {
+    console.log(data);
+    const { total, diff} = data ;
+    setTotalQuestion(Number(total));
+    console.log(totalQuestion);
+    setDifficulty(diff);
+    startQuiz();
 
+  });
 
   return (
     <div className="container App">
-    
-        <h1>Quiz App</h1>
+      {/* <h1>Quiz App</h1>
       <div>
         { gameOver || userAnswers.length === TOTAL_QUESTIONS ? (
           <button className="start" onClick={startQuiz} > start Quiz </button>
@@ -119,9 +104,39 @@ function App() {
           <button  className="nextQues" onClick={nextQuestion}> next Question </button>
         ): null }
 
-      </div>
-      </div>
+      </div> */}
+
+      <main>
+        <form onSubmit={onSubmit}>
+          <div>
+            <label htmlFor="total">Total Question</label>
+            <select
+              ref={register({ required: true })}
+              name="total"
+              id="total"
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+            </select>
+            
+          </div>
+          <div>
+            <label htmlFor="diff">Difficulty</label>
+            <select
+              ref={register({ required: true })}
+              name="diff"
+              id="diff"
+            >
+              <option value="easy">easy</option>
+              <option value="medium">mesium</option>
+              <option value="hard">hard</option>
+            </select>
+          </div>
+          <button type="submit">Save</button>
+        </form>
+      </main>
+    </div>
   );
-        }
+};
 
 export default App;
